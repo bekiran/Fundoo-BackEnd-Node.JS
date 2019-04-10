@@ -182,8 +182,7 @@ noteModel.prototype.isTrashed = (noteID, trashNote, callback) => {
         }, {
             $set: {
                 trash: trashNote.status,
-                pinned: false,
-                archive: false
+               
             }
         },
         (err, result) => {
