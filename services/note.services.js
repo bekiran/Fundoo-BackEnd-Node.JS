@@ -205,14 +205,116 @@ exports.isPinned = (paramID, paramData, callback) => {
  * @param : callback 
  * 
  ******************************************************************************************/
-exports.updateImage = (paramID,image,callback) => {   
-    console.log("in services for upload image",paramID,image);
-    noteModel.updateImage(paramID,image, (err, result) => {
+exports.updateImage = (paramID, image, callback) => {
+    noteModel.updateImage(paramID, image, (err, result) => {
+        // console.log("in services result in note image",result);
         if (err) {
             console.log("service error");
             callback(err);
         } else {
             console.log("in image service...");
+            return callback(null, result)
+        }
+    })
+}
+/**************************************************************************************
+ * 
+ * @param : labelData 
+ * @param : callback 
+ ***********************************************************************************************/
+exports.addLabel = (labelData, callback) => {
+    console.log("in services",labelData);
+    noteModel.addLabel(labelData, (err, result) => {
+        if (err) {
+            callback(err);
+        } else {
+            return callback(null, result)
+        }
+    })
+}
+/****************************************************************************************
+ * 
+ * @param : labelData 
+ * @param : callback 
+ ***************************************************************************************/
+exports.getLabels = (labelData, callback) => {
+    console.log("in services",labelData);
+    noteModel.getLabels(labelData, (err, result) => {
+        if (err) {
+            callback(err);
+        } else {
+            return callback(null, result)
+        }
+    })
+}
+/*******************************************************************
+ * 
+ * @param : labelData 
+ * @param : callback 
+ **********************************************************************/
+exports.deleteLabel = (labelData, callback) => {
+    console.log("in services",labelData);
+    noteModel.deleteLabel(labelData, (err, result) => {
+        if (err) {
+            callback(err);
+        } else {
+            return callback(null, result)
+        }
+    })
+}
+/******************************************************************************
+ * 
+ * @param : labelData 
+ * @param : callback 
+ ****************************************************************************/
+exports.updateLabel = (labelData, callback) => {
+    console.log("in services",labelData);
+    noteModel.updateLabel( labelData,(err, result) => {
+        if (err) {
+            callback(err);
+        } else {
+            return callback(null, result)
+        }
+    })
+}
+
+/**********************************************************************
+ * 
+ * @param : paramData 
+ * @param : callback 
+ ***********************************************************************/
+exports.saveLabelToNote = ( paramData, callback) => {
+    console.log("in services", paramData);
+    if(paramData.pull){
+        noteModel.deleteLabelToNote(paramData, (err, result) => {
+            if (err) {
+                callback(err);
+            } else {
+                return callback(null, result)
+            }
+        })
+    }
+    else{
+        noteModel.saveLabelToNote(paramData, (err, result) => {
+            if (err) {
+                callback(err);
+            } else {
+                return callback(null, result)
+            }
+        })
+    }
+}
+/***********************************************************************
+ * 
+ * @param : paramData 
+ * @param : callback 
+ ************************************************************************/
+exports.deleteLabelToNote = ( paramData, callback) => {
+    console.log("in services", paramData);
+    noteModel.deleteLabelToNote(paramData, (err, result) => {
+        if (err) {
+            callback(err);
+        } else {
             return callback(null, result)
         }
     })
