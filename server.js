@@ -9,7 +9,7 @@
  * 
  *************************************************************************************/
 // Access-Control-Allow-Origin
-const route = require('../FundooNotes-server/routes/routes');
+const route = require('./routes/routes');
 var cors = require('cors')
 
 
