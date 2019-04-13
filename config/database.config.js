@@ -9,5 +9,6 @@
  * 
  *************************************************************************************/
 module.exports = {
-    url:'mongodb://localhost:27017/fundoo'
+    // url:'mongodb://localhost:27017/fundoo'
+    url:'mongodb://172.31.28.109:27017/fundoo'
 }
