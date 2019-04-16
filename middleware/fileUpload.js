@@ -5,7 +5,7 @@ require('dotenv').config();
 const s3 = new aws.S3({
     secretAccessKey: process.env.secretAccessKey,
     accessKeyId: process.env.accessKeyId,
-    region: 'us-east-1'
+    region: 'us-east-2'
 });
 const fileFilter = (req, file, callback) => {
    // console.log("request --------",req);
