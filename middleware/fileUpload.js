@@ -4,7 +4,7 @@ const multerS3 = require('multer-s3');
 require('dotenv').config();
 const s3 = new aws.S3({
     secretAccessKey: process.env.secretAccessKey,
-    accessKeyId: process.env.accessKeyId,
+    accessKeyId: process.env.accessKeyID,
     region: 'us-east-2'
 });
 const fileFilter = (req, file, callback) => {
@@ -21,7 +21,7 @@ const upload = multer({
     fileFilter,
     storage: multerS3({
         s3,
-        bucket: 'fundoonote',
+        bucket: 'fundooapplication',
         acl: 'public-read',
         metadata: function (req, file, callback) {
             callback(null, {
