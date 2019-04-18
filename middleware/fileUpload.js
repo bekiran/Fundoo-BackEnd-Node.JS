@@ -8,10 +8,12 @@ const s3 = new aws.S3({
     region: 'us-east-2'
 });
 const fileFilter = (req, file, callback) => {
-   // console.log("request --------",req);
-    
-    console.log("file---------",file);
+
+  //  console.log("request ===>",req);
+    console.log("file===>",file);
+
     if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+        console.log("file===>entered");
         callback(null, true)
     } else {
         callback(new Error('Invalid Mime Type, only JPEG and PNG'), false);

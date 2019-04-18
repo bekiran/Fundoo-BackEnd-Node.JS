@@ -181,6 +181,35 @@ module.exports.resetPassword = (req, res) => {
 
     }
 }
+/***********************************************************************************
+ * 
+ * @param : req (request from user) 
+ * @param : res (response from server)
+ * 
+ **********************************************************************************/
+exports.setProfilePic = (req, res) => {
+    try {
+        console.log("req ===>",req.file);
+        
+        var responseResult = {};
+        userId = req.decoded.payload.user_id;
+        let image = (req.file.location)
+        userService.setProfilePic(userId, image, (err, result) => {
+            if (err) {
+                responseResult.success = false;
+                responseResult.error = err;
+                res.status(500).send(responseResult)
+            } else {
+                responseResult.status = true;
+                responseResult.data = result;
+                res.status(200).send(responseResult);
+            }
+        })
+    } catch (error) {
+        res.send(error);
+    }
+}
+
 
 
 

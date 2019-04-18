@@ -9,7 +9,10 @@
  * 
  *************************************************************************************/
 // Access-Control-Allow-Origin
-const route = require('./routes/routes');
+const noteRoute = require('./routes/noteRoutes');
+const userRoute = require('./routes/userRoutes')
+
+
 var cors = require('cors')
 
 
@@ -48,7 +51,8 @@ app.use(bodyParser.json())
 var expressValidator = require('express-validator')
 app.use(expressValidator());
 app.use(cors());
-app.use('/', route); 
+app.use('/', noteRoute);
+app.use('/', userRoute); 
 //define the simple route
 app.get('/', (req, res) =>{
     res.json({"message":"welcome to FundooNotes application. Take notes quickly, organize and keep track of all your notes"});

@@ -27,6 +27,7 @@ var userSchema = new mongoSchema({
     "lastname": { type: String, required: [true, "LastName is required"] },
     "email": { type: String, required: [true, "Email is required"] },
     "password": { type: String, required: [true, "password is required"] },
+    "profilePic": { type: String}
 }, {
         timestamps: true //mongoose has created this option to add automatically two fields - createdAt and updatedAt
     });
@@ -153,5 +154,29 @@ usermodel.prototype.resetPassword = (req, callback) => {
     });
 
 }
+/******************************************************************************************
+ * 
+ * @param : userID 
+ * @param : image 
+ * @param : callback 
+ * 
+ **************************************************************************************************/
+usermodel.prototype.setProfilePic = (userID, image, callback) => {
+    user.findOneAndUpdate({
+            _id: userID
+        }, {
+            $set: {
+                profilePic: image
+            }
+        },
+        (err, result) => {
+            if (err) {
+                callback(err)
+            } else {
+                console.log("updated user profile image successfully...")
+                return callback(null, image)
+            }
+        });
+};
 
 module.exports = new usermodel();

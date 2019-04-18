@@ -6,6 +6,7 @@
  *  @since          : 16-03-2019
  ******************************************************************************/
 const mongoose = require('mongoose');
+mongoose.set('useCreateIndex', true);
 const Schema = mongoose.Schema;
 /*********************************************************************
  * @description : Creating note schema using mongoose
@@ -42,6 +43,10 @@ var noteSchema = new mongoose.Schema({
     trash: {
         type: Boolean
     },
+    label: {
+        type: String,
+        ref : "labelSchema"
+    }
 }, {
     timestamps: true
 });
@@ -304,6 +309,11 @@ noteModel.prototype.updateImage = (noteID, updateNote, callback) => {
             }
         });
 };
+
+
+/*********************************************************************
+ * @description : Creating Label schema using mongoose
+ *********************************************************************/
 
 var labelSchema = new mongoose.Schema({
     userID: {
