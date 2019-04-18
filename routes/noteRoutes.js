@@ -32,7 +32,7 @@ router.post('/deleteLabel', middle.auth, note.deleteLabel);
 router.put('/updateLabel', middle.auth, note.updateLabel);
 router.post('/saveLabelToNote', middle.auth, note.saveLabelToNote);
 router.post('/deleteLabelToNote', middle.auth, note.deleteLabelToNote)
-router.put('/uploadImage', middle.auth, note.updateImage);
+router.put('/uploadImage', middle.auth, upload.single('image'), note.updateImage);
 
 
 module.exports = router;
