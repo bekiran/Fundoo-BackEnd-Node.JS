@@ -15,7 +15,7 @@ var noteSchema = new mongoose.Schema({
     userId: {
         type: Schema.Types.ObjectId,
         required: [true, "User_id required"],
-        ref: 'Note'
+        // ref: 'Note'
     },
     title: {
         type: String,

@@ -8,14 +8,22 @@
  * @since     : 04.03.2019
  * 
  *************************************************************************************/
-// Access-Control-Allow-Origin
+/*******************************************
+* Descp: To give the path to userRoute and noteRoute files
+********************************************/
 const noteRoute = require('./routes/noteRoutes');
 const userRoute = require('./routes/userRoutes')
 
-
+/***
+ * descp :  CORS is a node.js package for providing a Connect/Express middleware 
+ * that can be used to enable CORS with various options To enable Cross Origin Resource 
+ * Sharing CORS.
+ */
 var cors = require('cors')
 
-
+/**
+ * descp: require express. Express is an nodejs framework
+ */
 const express = require ('express');
 
 //To support JSON-encoded bodies

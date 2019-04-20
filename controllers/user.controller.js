@@ -192,13 +192,14 @@ module.exports.resetPassword = (req, res) => {
  **********************************************************************************/
 exports.setProfilePic = (req, res) => {
     try {
-        console.log("req dzsffxddfgdfgdfg===>",req.file);
         
+        // console.log(req);
         var responseResult = {};
-        console.log("userid -->",req.decoded.id);
+        // console.log("userid -->",req.decoded.id);
         userId = req.decoded.id;
-     
-        let image = req.file.location;
+        // console.log("req dzsffxddfgdfgdfg===>",req.file.location);
+        let image = (req.file.location);
+
         console.log("image -->",image);
         userService.setProfilePic(userId, image, (err, result) => {
             console.log("result in controler profile pic==?",result);
@@ -210,6 +211,8 @@ exports.setProfilePic = (req, res) => {
             } else {
                 responseResult.status = true;
                 responseResult.data = result;
+                console.log("******************************",responseResult);
+                
                 res.status(200).send(responseResult);
             }
         })

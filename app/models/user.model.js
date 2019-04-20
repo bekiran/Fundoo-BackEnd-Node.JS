@@ -162,11 +162,11 @@ usermodel.prototype.resetPassword = (req, callback) => {
  * @param : callback 
  * 
  **************************************************************************************************/
-usermodel.prototype.setProfilePic = (userID, image, callback) => {
-    console.log("userId->",userID);
+usermodel.prototype.setProfilePic = (userId, image, callback) => {
+    console.log("userId------------>",userId);
     
     user.findOneAndUpdate({
-            _id: userID
+            id: userId
         }, {
             $set: {
                 profilePic: image
