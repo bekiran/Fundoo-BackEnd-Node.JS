@@ -63,7 +63,8 @@ usermodel.prototype.register = (body, callback) => {
                 "firstname": body.firstname,
                 "lastname": body.lastname,
                 "email": body.email,
-                "password": hash(body.password)
+                "password": hash(body.password),
+                "profilePic": ""
             });
             newUser.save((err, result) => {
                 if (err) {
@@ -162,6 +163,8 @@ usermodel.prototype.resetPassword = (req, callback) => {
  * 
  **************************************************************************************************/
 usermodel.prototype.setProfilePic = (userID, image, callback) => {
+    console.log("userId->",userID);
+    
     user.findOneAndUpdate({
             _id: userID
         }, {

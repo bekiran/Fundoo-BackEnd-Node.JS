@@ -81,7 +81,7 @@ exports.resetPassword = (req, callback) => {
  *  
  *********************************************************************************************************/
 exports.setProfilePic = (paramID, image, callback) => {
-    // console.log("in services");
+     console.log("in services",image);
     try {
         userModel.setProfilePic(paramID, image, (err, result) => {
             if (err) {
