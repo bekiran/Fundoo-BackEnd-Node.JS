@@ -20,7 +20,7 @@ var sendmail=require('../middleware/sendmail');
 *@param       : res (response from server)
 ****************************************************************************/
 module.exports.register = (req, res) => {
-    console.log("inside register",req.body);
+    // console.log("inside register",req.body);
     req.checkBody('firstname', 'Firstname is not valid').isLength({ min: 3 }).isAlpha();
     req.checkBody('lastname', 'Lastname is not valid').isLength({ min: 3 }).isAlpha();
     req.checkBody('email', 'Email is not valid').isEmail();
@@ -125,7 +125,7 @@ module.exports.forgotPassword = (req, res) => {
                 responses.success = true;
                 responses.result = "Token generated sucessfully!";
                 responses.success = data;
-                console.log("data in controller========>", data[0]._id);
+                // console.log("data in controller========>", data[0]._id);
 
 
                 const payload = {
@@ -134,7 +134,7 @@ module.exports.forgotPassword = (req, res) => {
                 //  console.log(payload);
                 const obj = gentoken.GenerateToken(payload);
                 const url = `http://localhost:4200/resetPassword/${obj.token}`;
-                console.log("url in controller", url);
+                // console.log("url in controller", url);
 
                 sendmail.sendEMailFunction(url);
 
@@ -156,7 +156,7 @@ module.exports.forgotPassword = (req, res) => {
 ****************************************************************************/
 
 module.exports.resetPassword = (req, res) => {
-    console.log("inside forgotPassword");
+    // console.log("inside forgotPassword");
     req.checkBody('password', 'password is not valid').isLength({ min: 4 })
     var errors = req.validationErrors();
     var response = {};
@@ -167,7 +167,7 @@ module.exports.resetPassword = (req, res) => {
     } else {
         userService.resetPassword(req, (err, data) => {
             if (err) {
-                console.log(err);
+                // console.log(err);
                 return res.status(500).send({
                     message: err
                 })
@@ -189,7 +189,7 @@ module.exports.resetPassword = (req, res) => {
  **********************************************************************************/
 exports.setProfilePic = (req, res) => {
     try {
-        console.log("req ===>",req.file);
+        // console.log("req ===>",req.file);
         
         var responseResult = {};
         userId = req.decoded.payload.user_id;

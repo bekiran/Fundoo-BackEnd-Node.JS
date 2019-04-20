@@ -79,8 +79,8 @@ exports.updateColor = (req, res) => {
             var responseResult = {};
             noteID = req.body.noteID;
             color = req.body.color;
-            console.log("controller noteId: ",noteID);
-            console.log("controller color: ",color);
+            // console.log("controller noteId: ",noteID);
+            // console.log("controller color: ",color);
             
             noteService.updateColor(noteID, color, (err, result) => {
                 if (err) {
@@ -347,7 +347,7 @@ exports.isPinned = (req, res) => {
  *************************************************************************************/
 exports.updateImage = (req, res) => {
     try {
-        console.log("req.file------>", req.file);
+        // console.log("req.file------>", req.file);
         req.checkBody('noteID', 'noteID required').not().isEmpty();
         var errors = req.validationErrors();
         var response = {};

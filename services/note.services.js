@@ -31,10 +31,10 @@ exports.createNote = (data, callback) => {
 exports.getNotes = (data, callback) => {
     noteModel.getNotes(data, (err, result) => {
         if (err) {
-            console.log("service error");
+            // console.log("service error");
             callback(err);
         } else {
-           console.log("In service", result);
+        //    console.log("In service", result);
             callback(null, result);
         }
     });
@@ -47,10 +47,10 @@ exports.getNotes = (data, callback) => {
  * @param : callback 
  **************************************************************************/
 exports.updateColor = (paramID, paramData, callback) => {
-    console.log("in services paramID & param Data -->", paramID, paramData);
+    // console.log("in services paramID & param Data -->", paramID, paramData);
     noteModel.updateColor(paramID, paramData, (err, result) => {
         if (err) {
-            console.log("service error");
+            // console.log("service error");
             callback(err);
         } else {
             return callback(null, result);
@@ -61,7 +61,7 @@ exports.updateColor = (paramID, paramData, callback) => {
 exports.deleteNote = (noteID, callback) => {
     noteModel.deleteNote(noteID, (err, result) => {
         if (err) {
-            console.log("service error");
+            // console.log("service error");
 
             callback(err)
         } else {
@@ -77,7 +77,7 @@ exports.deleteNote = (noteID, callback) => {
  * @param : callback 
  ***********************************************************************/
 exports.isTrashed = (paramID, callback) => {
-    console.log("in services", paramID);
+    // console.log("in services", paramID);
     
     noteModel.getTrashStatus(paramID, (err, status) => {
         if (err) {
@@ -118,7 +118,7 @@ exports.isTrashed = (paramID, callback) => {
  * @param : callback 
  ****************************************************************************************/
 exports.isArchived = (paramID, paramData, callback) => {
-    console.log("in services", paramID, paramData);
+    // console.log("in services", paramID, paramData);
     noteModel.isArchived(paramID, paramData, (err, result) => {
         if (err) {
             callback(err);
@@ -134,7 +134,7 @@ exports.isArchived = (paramID, paramData, callback) => {
  * @param : callback 
  *****************************************************************************************/
 exports.reminder = (paramID, paramData, callback) => {
-    console.log("in services", paramID, paramData);
+    // console.log("in services", paramID, paramData);
 
     noteModel.reminder(paramID, paramData, (err, result) => {
         if (err) {
