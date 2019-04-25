@@ -77,7 +77,7 @@ try {
                     message: err
                 });
             } else {
-                console.log(data);
+              //  console.log(data);
                 
                 var response = {};
                 var token = jwt.sign({ email: req.body.email, id: data[0]._id }, 'secret', { expiresIn: 86400000 });
@@ -86,7 +86,7 @@ try {
                 response.token=token;
                 response.name = data[0].firstname
                 response.profilePic = data[0].profilePic
-                console.log("data in response : ",response);
+                // console.log("data in response : ",response);
                 
                 return res.status(200).send(response);
             }
@@ -193,12 +193,12 @@ module.exports.resetPassword = (req, res) => {
 exports.setProfilePic = (req, res) => {
     try {
         
-        // console.log(req);
+        // console.log("user controller",req);
         var responseResult = {};
         // console.log("userid -->",req.decoded.id);
         userId = req.decoded.id;
         // console.log("req dzsffxddfgdfgdfg===>",req.file.location);
-        let image = (req.file.location);
+        let image =(req.file.location);
 
         console.log("image -->",image);
         userService.setProfilePic(userId, image, (err, result) => {
@@ -211,7 +211,7 @@ exports.setProfilePic = (req, res) => {
             } else {
                 responseResult.status = true;
                 responseResult.data = result;
-                console.log("******************************",responseResult);
+                // console.log("******************************",responseResult);
                 
                 res.status(200).send(responseResult);
             }

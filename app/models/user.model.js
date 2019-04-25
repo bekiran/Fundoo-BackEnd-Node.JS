@@ -97,7 +97,7 @@ usermodel.prototype.login = (body, callback) => {
                 if (err) {
                     return callback(err);
                 } else if (res) {
-                    console.log(data);
+                    //console.log(data);
 
                     return callback(null, data);
                 } else {
@@ -164,11 +164,11 @@ usermodel.prototype.resetPassword = (req, callback) => {
  **************************************************************************************************/
 usermodel.prototype.setProfilePic = (userId, image, callback) => {
     console.log("userId------------>",userId);
-    
+    console.log("image------------>",image);
     user.findOneAndUpdate({
-            id: userId
+            _id: userId
         }, {
-            $set: {
+            $set:{
                 profilePic: image
             }
         },
@@ -176,7 +176,7 @@ usermodel.prototype.setProfilePic = (userId, image, callback) => {
             if (err) {
                 callback(err)
             } else {
-                console.log("updated user profile image successfully...")
+                console.log("updated user profile image successfully...",result)
                 return callback(null, image)
             }
         });

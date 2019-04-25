@@ -382,6 +382,8 @@ exports.updateImage = (req, res) => {
  * @param : res 
  ******************************************************************************/
 exports.addLabel = (req, res) => {
+    // console.log(req,"hkjhskj");
+    
     try {
         // console.log("req-------------------->", req);
         // req.checkBody('userID', 'userID required').not().isEmpty();
@@ -395,7 +397,7 @@ exports.addLabel = (req, res) => {
         } else {
             var responseResult = {};
             const labelData = {
-                userID: req.decoded.payload.user_id,
+                userID: req.decoded.id,
                 label: req.body.label
             }
             noteService.addLabel(labelData, (err, result) => {
@@ -433,7 +435,7 @@ exports.getLabels = (req, res) => {
         } else {
             var responseResult = {};
             const labelData = {
-                userID: req.decoded.payload.user_id,
+                userID: req.decoded.id,
             }
             noteService.getLabels(labelData, (err, result) => {
                 if (err) {
@@ -459,7 +461,7 @@ exports.getLabels = (req, res) => {
  *************************************************************************************/
 exports.deleteLabel = (req, res) => {
     try {
-        // console.log("req-------------------->", req);
+        console.log("req-------------------->", req);
         req.checkBody('labelID', 'labelID required').not().isEmpty();
         var errors = req.validationErrors();
         var response = {};
@@ -496,7 +498,7 @@ exports.deleteLabel = (req, res) => {
  ********************************************************************************/
 exports.updateLabel = (req, res) => {
     try {
-        // console.log("req-------------------->", req);
+        console.log("req-------------------->", req);
         req.checkBody('labelID', 'labelID required').not().isEmpty();
         req.checkBody('editLabel', 'editLabel required').not().isEmpty();
         var errors = req.validationErrors();

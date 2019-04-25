@@ -59,7 +59,7 @@ function noteModel() {}
  * @param {*response to backend} callback 
  ******************************************************************************************************/
 noteModel.prototype.addNotes = (objectNote, callback) => {
-    console.log("data-->", objectNote);
+   // console.log("data-->", objectNote);
     const noteModel = new note(objectNote.body);
     noteModel.save((err, result) => {
         if (err) {
@@ -180,8 +180,8 @@ noteModel.prototype.getTrashStatus = (id, callback) => {
  *****************************************************************************************/
 noteModel.prototype.isTrashed = (noteID, trashNote, callback) => {
     
-    console.log("dtaa in getrash notes==>",trashNote)
-    console.log("dtaa in getrash notes==>",noteID)
+    // console.log("dtaa in getrash notes==>",trashNote)
+    // console.log("dtaa in getrash notes==>",noteID)
     note.findOneAndUpdate({
             _id: noteID
         }, {
@@ -425,7 +425,7 @@ noteModel.prototype.updateLabel = (changedLabel, callback) => {
  * @param : callback 
  *****************************************************************************************/
 noteModel.prototype.saveLabelToNote = (labelParams, callback) => {
-    console.log("in model", labelParams.noteID);
+    // console.log("in model", labelParams.noteID);
     var labelledNote = null;
     var noteID = null;
     if (labelParams != null) {
@@ -463,7 +463,7 @@ noteModel.prototype.saveLabelToNote = (labelParams, callback) => {
  * @param : callback 
  *************************************************************************************************/
 noteModel.prototype.deleteLabelToNote = (labelParams, callback) => {
-    console.log("in model", labelParams.noteID);
+    // console.log("in model", labelParams.noteID);
     var labelledNote = null;
     var noteID = null;
     if (labelParams != null) {
@@ -488,7 +488,7 @@ noteModel.prototype.deleteLabelToNote = (labelParams, callback) => {
                 callback(err)
             } else {
                 let newArray = result.label;
-                console.log("in model success result",result);
+                // console.log("in model success result",result);
 
                 for (let i = 0; i < newArray.length; i++) {
                     if (newArray[i] === labelledNote) {
