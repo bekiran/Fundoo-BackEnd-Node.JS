@@ -538,6 +538,8 @@ exports.updateLabel = (req, res) => {
  ****************************************************************************************/
 exports.saveLabelToNote = (req, res) => {
     try {
+        console.log("save label to note ===>",req.body);
+        
         req.checkBody('noteID', 'noteID required').not().isEmpty();
         var errors = req.validationErrors();
         var response = {};
@@ -547,7 +549,7 @@ exports.saveLabelToNote = (req, res) => {
             return res.status(422).send(response);
         } else {
             var responseResult = {};
-            noteID = req.body.noteID;
+            // noteID = req.body.noteID;
             noteService.saveLabelToNote(req.body, (err, result) => {
                 if (err) {
                     responseResult.status = false;
