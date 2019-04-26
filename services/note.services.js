@@ -8,6 +8,8 @@
  *  @since          : 16-03-2019
  ******************************************************************************/
 const noteModel = require('../app/models/node.model');
+const NotificationModel=require('../app/models/notification')
+const sendPush=require('../sendNotification')
 /***********************************************************
  * @param : data 
  * @param : callback 
@@ -284,9 +286,11 @@ exports.updateLabel = (labelData, callback) => {
  * @param : callback 
  ***********************************************************************/
 exports.saveLabelToNote = ( paramData, callback) => {
-    console.log("in services", paramData);
+  
     if(paramData.pull){
         noteModel.deleteLabelToNote(paramData, (err, result) => {
+            console.log("result @ services", result);
+            
             if (err) {
                 callback(err);
             } else {
@@ -295,7 +299,10 @@ exports.saveLabelToNote = ( paramData, callback) => {
         })
     }
     else{
+        console.log("in services", paramData);
         noteModel.saveLabelToNote(paramData, (err, result) => {
+            console.log("hhgds==>",paramData);
+            
             if (err) {
                 callback(err);
             } else {
@@ -315,7 +322,83 @@ exports.deleteLabelToNote = ( paramData, callback) => {
         if (err) {
             callback(err);
         } else {
+            console.log("result in services ====>",result);
+            return callback(null, result)
+            
+            
+        }
+    })
+}
+
+/******************************************************************************
+ * 
+ * @param {*} collabData 
+ * @param {*} callback 
+ * 
+ *******************************************************************************/
+exports.saveCollaborator = (collabData, callback) => {
+    collaboratorModel.saveCollaborator(collabData, (err, result) => {
+        if (err) {
+            console.log("service error");
+            callback(err);
+        } else {
             return callback(null, result)
         }
     })
 }
+/****************************************************************************
+ * 
+ * @param {*} userId 
+ * @param {*} callback 
+ * 
+ ****************************************************************************/
+exports.getCollabNotesUserId = (userId, callback) => {
+    collaboratorModel.getCollabNotesUserId(userId, (err, result) => {
+        if (err) {
+            console.log("service error");
+            callback(err);
+        } else {
+            callback(null, result);
+        }
+    })
+}
+/***************************************************************************************
+ * 
+ * @param {*} callback 
+ * 
+ ****************************************************************************************/
+exports.getCollaboratorDetails =  (callback) => {
+    console.log("get collab details::");
+     userModel.getUserDetails((err, result) => {
+        if (err) {
+            console.log("service error");
+            callback(err);
+        } else {
+            callback(null, result);
+        }
+    })
+}
+exports.pushNotification = (req, callback) => {
+    NotificationModel.updatePushNotification(req, (err, result) => {
+
+      if (err) {
+        console.log("service error");
+        callback(err);
+      } else {
+        return callback(null, result);
+      }
+    });
+  };
+  exports.sendPushNotification = (user_id, callback)=>{
+    NotificationModel.sendPushNotification(user_id, (err, result) => {
+      if (err) {
+        console.log("service error");
+        callback(err);
+      } else {
+        console.log("IN SERVICE RESUT IS ",result);
+        sendPush.SendPushNotify(result)
+        return callback(null, result);
+      }
+    });
+    
+  }
