@@ -118,6 +118,8 @@ module.exports.forgotPassword = (req, res) => {
         return res.status(422).send(response);
     } else {
         userService.forgotPassword(req.body, (err, data) => {
+            console.log("data",data);
+            
             var responses = {};
 
             if (err) {

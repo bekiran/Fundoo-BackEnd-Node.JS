@@ -92,3 +92,6 @@ mongoose.connect(dbConfig.url,{
     process.exit();
 });
 module.exports = app;
+
+// var schedule =require('node-scchedule');
+// var j = schedule.scheduleJob()

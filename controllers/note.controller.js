@@ -6,6 +6,76 @@
  *  @since          : 16-03-2019
  ******************************************************************************/
 const noteService = require("../services/note.services");
+
+const redis = require('redis');
+
+const responseTime = require('response-time')
+const express = require('express');
+const app = express(); 
+
+
+/**
+ * 
+ * @Description : login is used to ckeck the data is present in database or not...
+ * @param : req from client
+ * @param : res from server
+ */
+
+ const client = redis.createClient();
+ 
+ //to print redis error
+ client.on('error',(err) => {
+     console.log("Error", err);
+     
+ });
+
+ app.use(responseTime());
+
+ /*************************** Caching with Redis  *********************************/
+
+ /**************************************************************
+ * @description: To get the created note with data
+ * @param : (request from client):req
+ * @param : (response from server):res
+ **************************************************************/
+
+// exports.getNotes = (req, res) => {
+//     var responseResult = {}
+//     /******************************************************
+//      * @description: pass the req data to sevices...
+//      ******************************************************/
+//    var userID= req.decoded.id;
+    
+//     return client.get(userID, (err, result) => {
+//         // If that key exist in Redis store
+//         console.log("result inn redis==>", result);
+//         console.log("redis cacheee entered first");
+//         if (result) {
+//         //console.log("json", JSON.parse(result));
+//         JSON.parse(result);
+//         console.log('redis cache data ==>' + result);
+//            const resultJSON = JSON.parse(result);
+//            responseResult.result =  resultJSON ;
+//                 return res.status(200).send(responseResult);
+//             }else{
+//                 noteService.getNotes(req, (err, result) => {
+//                     if (err) {
+//                         responseResult.sucess = false;
+//                         responseResult.result = err;
+//                         res.status(500).send(responseResult);
+//                     }
+//                     else {
+//                         responseResult.sucess = true;
+//                         responseResult.result = result;
+//                         client.setex(userID, 3600, JSON.stringify(result));
+//                         res.status(200).send(responseResult);
+//                     }
+//                 })
+//             }
+//         })
+//     }
+
+
 /************************************************
  * @description:it handles the creating note data
  * @param : (request from client): req
@@ -26,6 +96,7 @@ exports.createNote = (req, res) => {
                 };
                 responseResult.status = true;
                 responseResult.message = result;
+                responseResult.message = "Note retrieved from DB successfully";
                 responseResult.data = userNote;
                 res.status(200).send(responseResult);
             }
@@ -60,43 +131,7 @@ exports.getNotes = (req, res) => {
     //     res.send("error in getting notes",err)
     // }
 };
-/*************************** redis cache  *********************************/
-exports.getNote = (req, res) => {
-    var responce = {}
-    /**
-     * @description:pass the request data to sevices....
-     */
-   var userID= req.decoded.payload.user_id;
-    
-    return client.get(userID, (err, result) => {
-        // If that key exist in Redis store
-        console.log("result inn redis==>", result);
-        console.log("redis cacheee entered first");
-        if (result) {
-           //console.log("json", JSON.parse(result));
-             JSON.parse(result);
-            console.log('redis cache data ==>' + result);
-           const resultJSON = JSON.parse(result);
-               responce.result =  resultJSON ;
-                return res.status(200).send(responce);
-            }
-            else{
-                noteservices.noteget(req, (err, result) => {
-                    if (err) {
-                        responce.sucess = false;
-                        responce.result = err;
-                        res.status(500).send(responce);
-                    }
-                    else {
-                        responce.sucess = true;
-                        responce.result = result;
-                       client.setex(userID, 3600, JSON.stringify(result));
-                        res.status(200).send(responce);
-                    }
-                })
-            }
-        })
-    }
+
     
 /***************************************************************************
  * @description: To update color of note
