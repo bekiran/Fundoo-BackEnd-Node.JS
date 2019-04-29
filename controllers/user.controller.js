@@ -86,6 +86,7 @@ try {
                 response.token=token;
                 response.name = data[0].firstname
                 response.profilePic = data[0].profilePic
+                // response.lname = daat[0].lastname 
                 // console.log("data in response : ",response);
                 
                 return res.status(200).send(response);
