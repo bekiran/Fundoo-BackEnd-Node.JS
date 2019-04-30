@@ -6,6 +6,7 @@
  *  @since          : 16-03-2019
  ******************************************************************************/
 const noteService = require("../services/note.services");
+const collaboratorService = require('../services/note.services')
 
 const redis = require('redis');
 
@@ -14,12 +15,12 @@ const express = require('express');
 const app = express(); 
 
 
-/**
+/************************************************************************************
  * 
  * @Description : login is used to ckeck the data is present in database or not...
  * @param : req from client
  * @param : res from server
- */
+ ****************************************************************************************/
 
  const client = redis.createClient();
  
@@ -677,7 +678,6 @@ exports.saveLabelToNote = (req, res) => {
     }
 };
 /*****************************************************************************************
- *
  * @param : req
  * @param : res
  **************************************************************************************/
@@ -722,18 +722,9 @@ exports.deleteLabelToNote = (req, res) => {
  *********************************************************************************/
 exports.saveCollaborator = (req, res) => {
     try {
-        req
-            .checkBody("userID", "userID required")
-            .not()
-            .isEmpty();
-        req
-            .checkBody("noteID", "noteID required")
-            .not()
-            .isEmpty();
-        req
-            .checkBody("collabUserID", "collabUserID required")
-            .not()
-            .isEmpty();
+        req.checkBody('userID', 'userID required').not().isEmpty();
+        req.checkBody('noteID', 'noteID required').not().isEmpty();
+        req.checkBody('collabUserID', 'collabUserID required').not().isEmpty();
         var errors = req.validationErrors();
         var response = {};
         if (errors) {
@@ -746,53 +737,57 @@ exports.saveCollaborator = (req, res) => {
                 userID: req.decoded.payload.user_id,
                 noteID: req.body.noteID,
                 collabUserID: req.body.collabID
-            };
-            noteService.saveCollaborator(collabData, (err, result) => {
+            }
+            collaboratorService.saveCollaborator(collabData, (err, result) => {
                 if (err) {
                     responseResult.status = false;
                     responseResult.error = err;
                     res.status(500).send(responseResult);
-                } else {
+                }
+                else {
                     responseResult.status = true;
                     responseResult.data = result;
                     const url = `you have been successfully collabed with one fundooNotes user`;
-                    sent.sendEMailFunction(url);
+                    sent.sendEMailFunctionForCollaborator(url);
                     res.status(200).send(url);
                     //res.status(200).send(responseResult);
                 }
-            });
+            })
         }
-    } catch (error) {
-        res.send(error);
     }
-};
+    catch (error) {
+        res.send(error)
+    }
+}
 
-/**
+/**********************************************************************************
  * @description:It handles get the collaborator details
  * @param {*request from frontend} req
  * @param {*response from backend} res
- */
+ **********************************************************************************/
 exports.getCollaboratorDetails = (req, res) => {
     try {
         var responseResult = {};
         // console.log("in collab noteController", req.body);
-        noteService.getCollaboratorDetails((err, result) => {
+        collaboratorService.getCollaboratorDetails((err, result) => {
             console.log(err);
             console.log(result);
             if (err) {
                 responseResult.status = false;
                 responseResult.error = err;
                 res.status(500).send(responseResult);
-            } else {
+            }
+            else {
                 responseResult.status = true;
                 responseResult.data = result;
                 res.status(200).send(responseResult);
             }
-        });
-    } catch (error) {
-        res.send(error);
+        })
     }
-};
+    catch (error) {
+        res.send(error)
+    }
+}
 
 exports.pushNotification = (req, res) => {
     try {
@@ -851,40 +846,3 @@ exports.sendPushNotification = (req, res) => {
     }
 };
 
-//   exports.getnote = (req, res) => {
-
-//     var responce = {}
-//     /**
-//      * @description:pass the request data to sevices....
-//      */
-//    var userID= req.decoded.payload.user_id;
-
-//     return client.get(userID, (err, result) => {
-//         // If that key exist in Redis store
-//         console.log("result inn redis==>", result);
-//         console.log("redis cacheee entered first");
-//         if (result) {
-//            //console.log("json", JSON.parse(result));
-//              JSON.parse(result);
-//             console.log('redis cache data ==>' + result);
-//            const resultJSON = JSON.parse(result);
-//            responce.result =  resultJSON ;
-//             return res.status(200).send(responce);
-//         }
-//         else{
-//             noteservices.noteget(req, (err, result) => {
-//                 if (err) {
-//                     responce.sucess = false;
-//                     responce.result = err;
-//                     res.status(500).send(responce);
-//                 }
-//                 else {
-//                     responce.sucess = true;
-//                     responce.result = result;
-//                    client.setex(userID, 3600, JSON.stringify(result));
-//                     res.status(200).send(responce);
-//                 }
-//             })
-//         }
-//     })
-// }

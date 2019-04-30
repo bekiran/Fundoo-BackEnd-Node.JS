@@ -8,6 +8,7 @@
  *  @since          : 16-03-2019
  ******************************************************************************/
 const noteModel = require('../app/models/node.model');
+const collaboratorModel = require('../app/models/node.model')
 const NotificationModel=require('../app/models/notification')
 const sendPush=require('../sendNotification')
 /***********************************************************
@@ -346,6 +347,7 @@ exports.saveCollaborator = (collabData, callback) => {
         }
     })
 }
+
 /****************************************************************************
  * 
  * @param {*} userId 

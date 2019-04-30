@@ -8,9 +8,9 @@
 const mongoose = require("mongoose");
 mongoose.set("useCreateIndex", true);
 const Schema = mongoose.Schema;
-/*********************************************************************
+/*******************************************************************************
  * @description : Creating note schema using mongoose
- *********************************************************************/
+ ******************************************************************************/
 var noteSchema = new mongoose.Schema(
   {
     userId: {
@@ -44,6 +44,12 @@ var noteSchema = new mongoose.Schema(
     trash: {
       type: Boolean
     },
+    collab: [
+      {
+        type: String,
+        ref: "collabSchema"
+      }
+    ],
     label: [
       {
         type: String,
@@ -57,7 +63,7 @@ var noteSchema = new mongoose.Schema(
 );
 var note = mongoose.model("Note", noteSchema);
 
-function noteModel() {}
+function noteModel() { }
 /*******************************************************************************************************
  * @description:it will add the notes data using note schema and save the data into the database
  * @param {*request from frontend} objectNote
@@ -516,16 +522,16 @@ noteModel.prototype.deleteLabelToNote = (labelParams, callback) => {
       if (err) {
         callback(err);
       } else {
-       
+
         console.log("in model success result", result.label);
         let newArray = result.label;
-        console.log("newArray===>",newArray.length);
-        
+        console.log("newArray===>", newArray.length);
+
         for (let i = 0; i < newArray.length; i++) {
           if (newArray[i] === labelParams.label) {
             newArray.splice(i, 1);
-            console.log("adjshji==>",newArray);
-            
+            console.log("adjshji==>", newArray);
+
             return callback(null, newArray);
           }
         }
@@ -537,33 +543,35 @@ noteModel.prototype.deleteLabelToNote = (labelParams, callback) => {
 /*****************************************************************************
  * @description:Creating collaborator schema using mongoose
  ****************************************************************************/
-const collabSchema = mongoose.Schema(
-  {
-    userID: {
-      type: Schema.Types.ObjectId,
-      ref: "UserSchema"
-    },
-    noteID: {
-      type: Schema.Types.ObjectId,
-      ref: "Note"
-    },
-    collabUserID: {
-      type: Schema.Types.ObjectId,
-      ref: "UserSchema"
-    }
+/**
+ * @description:Creating collaborator schema using mongoose
+ */
+const collabSchema = mongoose.Schema({
+  userID: {
+    type: Schema.Types.ObjectId,
+    ref: "UserSchema"
   },
+  noteID: {
+    type: Schema.Types.ObjectId,
+    ref: "Note"
+  },
+  collabUserID: {
+    type: Schema.Types.ObjectId,
+    ref: "UserSchema"
+  },
+},
   {
     timestamps: true
-  }
-);
-const Collab = mongoose.model("Collaborator", collabSchema);
+  })
+const Collab = mongoose.model('Collaborator', collabSchema);
 
-/*************************************************************************************
- *
- * @param : collabData
- * @param : callback
- *
- *************************************************************************************/
+/*****************************************************************
+* 
+* @param {*} collabData 
+* @param {*} callback 
+*
+******************************************************************/
+
 noteModel.prototype.saveCollaborator = (collabData, callback) => {
   console.log("ultimate save", collabData);
   const Data = new Collab(collabData);
@@ -574,61 +582,61 @@ noteModel.prototype.saveCollaborator = (collabData, callback) => {
     } else {
       return callback(null, result);
     }
-  });
-};
+  })
+}
+
+/*******************************************************************
+ * @param : noteID
+ * 
+ * @param : callback
+ *******************************************************************/
+
+noteModel.prototype.getDataByNoteId = (noteID, callback) => {
+  Collab.find({ noteID: noteID })
+    .populate('userID', { notes: 0, password: 0, __v: 0, resetPasswordExpires: 0, resetPasswordToken: 0 })
+    .populate('collabUserID', { notes: 0, password: 0, __v: 0, resetPasswordExpires: 0, resetPasswordToken: 0 })
+    .populate('noteID')
+    .exec(function (err, result) {
+      if (err) {
+        callback(err);
+      } else {
+        callback(null, result);
+      }
+    })
+}
+
+/*************************************************************************
+ * @param: userID
+ * @param: callback
+ ***********************************************************************/
 
 noteModel.prototype.getCollabNotesUserId = (userID, callback) => {
+  console.log("--------------------------", userID);
   Collab.find({ collabUserID: userID }, (err, result) => {
     if (err) {
       callback(err);
     } else {
       callback(null, result);
     }
-  });
-};
+  })
+}
 
-noteModel.prototype.getDataByNoteId = (noteID, callback) => {
-  Collab.find({ noteID: noteID })
-    .populate("userID", {
-      notes: 0,
-      password: 0,
-      __v: 0,
-      resetPasswordExpires: 0,
-      resetPasswordToken: 0
-    })
-    .populate("collabUserID", {
-      notes: 0,
-      password: 0,
-      __v: 0,
-      resetPasswordExpires: 0,
-      resetPasswordToken: 0
-    })
-    .populate("noteID")
-    .exec(function(err, result) {
-      if (err) {
-        callback(err);
-      } else {
-        callback(null, result);
-      }
-    });
-};
+/***********************************************************************************
+ * @param: ownerUserId
+ * @param: callback
+ * 
+ ***********************************************************************************/
 
 noteModel.prototype.getCollabOwnerUserId = (ownerUserId, callback) => {
   Collab.find({ userID: ownerUserId })
-    .populate("collabUserID", {
-      notes: 0,
-      password: 0,
-      __v: 0,
-      resetPasswordExpires: 0,
-      resetPasswordToken: 0
-    })
-    .exec(function(err, result) {
+    .populate('collabUserID', { notes: 0, password: 0, __v: 0, resetPasswordExpires: 0, resetPasswordToken: 0 })
+    .exec(function (err, result) {
       if (err) {
         callback(err);
       } else {
         callback(null, result);
       }
-    });
-};
+    })
+}
 
 module.exports = new noteModel();
