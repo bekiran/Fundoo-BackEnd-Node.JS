@@ -12,7 +12,8 @@
 * Descp: To give the path to userRoute and noteRoute files
 ********************************************/
 const noteRoute = require('./routes/noteRoutes');
-const userRoute = require('./routes/userRoutes')
+const userRoute = require('./routes/userRoutes');
+const noteService = require('./services/note.services')
 
 /***
  * descp :  CORS is a node.js package for providing a Connect/Express middleware 
@@ -24,7 +25,7 @@ var cors = require('cors')
 /**
  * descp: require express. Express is an nodejs framework
  */
-const express = require ('express');
+const express = require('express');
 
 //To support JSON-encoded bodies
 const bodyParser = require('body-parser');
@@ -32,7 +33,7 @@ const bodyParser = require('body-parser');
 //creat express app
 const app = express();
 
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
 
@@ -40,8 +41,8 @@ app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Credentials", "true");
     res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
     // res.header("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
-   next();
-  });
+    next();
+});
 
 
 
@@ -51,7 +52,7 @@ var config = require('./config/database.config');
 
 
 //parse request of content-type application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({extended : true}))
+app.use(bodyParser.urlencoded({ extended: true }))
 
 //parse request of content-type-application / JSON.
 app.use(bodyParser.json())
@@ -60,16 +61,16 @@ var expressValidator = require('express-validator')
 app.use(expressValidator());
 app.use(cors());
 app.use('/', noteRoute);
-app.use('/', userRoute); 
+app.use('/', userRoute);
 //define the simple route
-app.get('/', (req, res) =>{
-    res.json({"message":"welcome to FundooNotes application. Take notes quickly, organize and keep track of all your notes"});
+app.get('/', (req, res) => {
+    res.json({ "message": "welcome to FundooNotes application. Take notes quickly, organize and keep track of all your notes" });
 });
 
 
 
 //listen for request
-app.listen(3000,() =>{
+app.listen(3000, () => {
     console.log("Server is listening on port 3000");
 });
 require('dotenv').config()
@@ -81,17 +82,23 @@ mongoose.Promise = global.Promise;
 
 
 
- 
+
 //connecting to the database
-mongoose.connect(dbConfig.url,{
-    useNewUrlParser : true
-}). then (() =>{
+mongoose.connect(dbConfig.url, {
+    useNewUrlParser: true
+}).then(() => {
     console.log("Sucessfully connected to the database");
-}).catch(err=>{
-    console.log('Could not connect to the database. Exiting now...',err);
+}).catch(err => {
+    console.log('Could not connect to the database. Exiting now...', err);
     process.exit();
 });
-module.exports = app;
 
-// var schedule =require('node-scchedule');
-// var j = schedule.scheduleJob()
+
+
+//It allows you to schedule jobs (arbitrary functions) for execution at specific dates, with optional recurrence rules.
+var schedule = require("node-schedule");
+var j = schedule.scheduleJob("*/1 * * * * ", function () {
+    noteService.checkForReminder();
+});
+
+module.exports = app;

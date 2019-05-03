@@ -557,7 +557,8 @@ const collabSchema = mongoose.Schema({
   },
   collabUserID: {
     type: Schema.Types.ObjectId,
-    ref: "UserSchema"
+    ref: "UserSchema",
+    unique: true
   },
 },
   {
@@ -639,4 +640,31 @@ noteModel.prototype.getCollabOwnerUserId = (ownerUserId, callback) => {
     })
 }
 
+
+noteModel.prototype.getAllUser = (callBack) => {
+  note.find((err, result) => {
+      if (err) {
+          callBack(err);
+      }
+      else {
+          const reminder = []
+          var d = new Date();
+          const date = new Date(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes()).toJSON();
+
+          result.forEach(function (value) {
+              if (value.reminder == date) {
+                  console.log('correct');
+                  reminder.push(value);
+              }
+          })
+          console.log("Reminder length", reminder.length);
+          if (reminder.length > 0) {
+              callBack(null, reminder)
+          }
+          else {
+              callBack(null, "No reminders found")
+          }
+      }
+  });
+}
 module.exports = new noteModel();
