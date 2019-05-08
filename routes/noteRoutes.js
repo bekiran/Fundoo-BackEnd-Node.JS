@@ -40,7 +40,10 @@ router.post('/deleteLabelToNote', middle.auth,note.deleteLabelToNote)
 router.put('/uploadImage', middle.auth, upload.single('image'), note.updateImage);
 
 router.post('/saveCollaborator', middle.auth, note.saveCollaborator);
-router.get('/getCollaboratorDetails', middle.auth, note.getCollaboratorDetails);
+router.get('/getCollaborator', middle.auth, note.getCollaborator);
+router.post('/deleteCollaborator', middle.auth, note.deleteCollaborator);
+
+// router.get('/getCollaboratorDetails', middle.auth, note.getCollaboratorDetails);
 
 router.post('/pushNotification', middle.auth, note.pushNotification);
 // router.get('/sendNotification/:userid', note.sendPushNotification),

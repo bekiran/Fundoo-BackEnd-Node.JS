@@ -45,7 +45,7 @@ exports.sendEMailFunctionForCollaborator = (url) => {
         from: process.env.email, // sender address
         to: process.env.email,  // list of receivers
         subject: 'Fundoo-Notes Collaborator', // Subject line
-        text: 'A note have been Collaborated with you, pls follow the link:\n\n' + url
+        text: 'A note have been Collaborated with you \n\n' + url
     };
     transporter.sendMail(mailOptions, (err, info) => {
         if (err)

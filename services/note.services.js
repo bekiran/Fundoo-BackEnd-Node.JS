@@ -14,6 +14,7 @@ const collaboratorModel = require("../app/models/node.model");
 const NotificationModel = require("../app/models/notification");
 const sendPush = require("../sendNotification");
 const notifyModel = require("../sendNotification");
+const userModel = require("../controllers/user.controller")
 
 /***********************************************************
  * @param : data
@@ -335,6 +336,8 @@ exports.deleteLabelToNote = (paramData, callback) => {
  *
  *******************************************************************************/
 exports.saveCollaborator = (collabData, callback) => {
+    console.log("service col ==>",collabData);
+    
     collaboratorModel.saveCollaborator(collabData, (err, result) => {
         if (err) {
             console.log("service error");
@@ -347,36 +350,69 @@ exports.saveCollaborator = (collabData, callback) => {
 
 /****************************************************************************
  *
- * @param {*} userId
+ * @param {*} collabData
  * @param {*} callback
  *
  ****************************************************************************/
-exports.getCollabNotesUserId = (userId, callback) => {
-    collaboratorModel.getCollabNotesUserId(userId, (err, result) => {
+
+exports.getCollaborator = (collabData, callBack) => {
+
+    noteModel.getCollaborator(collabData, (err, result) =>{
+        if(err) {
+            callBack(err)
+        } else {
+            return callBack(null, result)
+        }
+    })
+
+}
+
+/****************************************************************************
+ *
+ * @param {*} paramData
+ * @param {*} callback
+ *
+ ****************************************************************************/
+exports.deleteCollaborator = (paramData, callback) => {
+    console.log("in services", paramData);
+    noteModel.deleteCollaborator(paramData, (err, result) => {
         if (err) {
-            console.log("service error");
             callback(err);
         } else {
-            callback(null, result);
+            console.log("result in services ====>", result);
+            return callback(null, result);
         }
     });
 };
+
+
+
+// exports.getCollabNotesUserId = (userId, callback) => {
+//     collaboratorModel.getCollabNotesUserId(userId, (err, result) => {
+//         if (err) {
+//             console.log("service error");
+//             callback(err);
+//         } else {
+//             callback(null, result);
+//         }
+//     });
+// };
 /***************************************************************************************
  *
  * @param {*} callback
  *
  ****************************************************************************************/
-exports.getCollaboratorDetails = callback => {
-    console.log("get collab details::");
-    userModel.getUserDetails((err, result) => {
-        if (err) {
-            console.log("service error");
-            callback(err);
-        } else {
-            callback(null, result);
-        }
-    });
-};
+// exports.getCollaboratorDetails = callback => {
+//     console.log("get collab details::");
+//     userModel.getUserDetails((err, result) => {
+//         if (err) {
+//             console.log("service error");
+//             callback(err);
+//         } else {
+//             callback(null, result);
+//         }
+//     });
+// };
 
 /***********************************************************************************************
  * @description: Push Notification

@@ -508,7 +508,6 @@ noteModel.prototype.deleteLabelToNote = (labelParams, callback) => {
 
   labelledNote = labelParams.label;
   noteID = labelParams.noteID;
-
   note.findOneAndUpdate(
     {
       _id: noteID
@@ -522,7 +521,6 @@ noteModel.prototype.deleteLabelToNote = (labelParams, callback) => {
       if (err) {
         callback(err);
       } else {
-
         console.log("in model success result", result.label);
         let newArray = result.label;
         console.log("newArray===>", newArray.length);
@@ -546,125 +544,208 @@ noteModel.prototype.deleteLabelToNote = (labelParams, callback) => {
 /**
  * @description:Creating collaborator schema using mongoose
  */
-const collabSchema = mongoose.Schema({
-  userID: {
-    type: Schema.Types.ObjectId,
-    ref: "UserSchema"
+const collabSchema = mongoose.Schema(
+  {
+    userID: {
+      type: Schema.Types.ObjectId,
+      ref: "UserSchema"
+    },
+    noteID: {
+      type: Schema.Types.ObjectId,
+      ref: "Note"
+    },
+    collabUserID: {
+      type: "String",
+      required: [true, "required email"],
+      ref: "UserSchema"
+    }
   },
-  noteID: {
-    type: Schema.Types.ObjectId,
-    ref: "Note"
-  },
-  collabUserID: {
-    type: Schema.Types.ObjectId,
-    ref: "UserSchema",
-    unique: true
-  },
-},
   {
     timestamps: true
-  })
-const Collab = mongoose.model('Collaborator', collabSchema);
+  }
+);
+const Collab = mongoose.model("Collaborator", collabSchema);
 
-/*****************************************************************
-* 
-* @param {*} collabData 
-* @param {*} callback 
-*
-******************************************************************/
+/*******************************************************************
+ *@description: to save the collaborator to the note
+ * @param {*} collabData
+ * @param {*} callback
+ ******************************************************************/
 
-noteModel.prototype.saveCollaborator = (collabData, callback) => {
-  console.log("ultimate save", collabData);
-  const Data = new Collab(collabData);
+noteModel.prototype.saveCollaborator = (data, callback) => {
+  // var collabaData =null;
+  // noteID = null;
+  console.log("ultimate save", data);
+  var obj = {
+    userID: data.userID,
+    noteID: data.noteID,
+    collabUserID: data.collabUserID
+  };
+  console.log(obj);
+
+  const Data = new Collab(obj);
+  // console.log('data ',Data);
+
   Data.save((err, result) => {
     if (err) {
       console.log(err);
       callback(err);
     } else {
+      console.log(result);
+      note.findOneAndUpdate(
+        { _id: result.noteID },
+        { $push: { collab: result.collabUserIDl } },
+        (err, result) => {
+          if (err) {
+            callback(err);
+          } else {
+            callback(null, result);
+          }
+        }
+      );
+    }
+  });
+};
+
+/*********************************************************************************************
+ * @description: to get the collaborator list
+ * @param : id
+ * @param : callback
+ *********************************************************************************************/
+
+noteModel.prototype.getCollaborator = (id, callback) => {
+  console.log("in model", id);
+  Collab.find({ userID: id.userID }, (err, result) => {
+    if (err) {
+      callback(err);
+    } else {
+      console.log("labels", result);
       return callback(null, result);
     }
-  })
+  });
 }
 
 /*******************************************************************
+ * @description: to delete collaborator from notes
  * @param : noteID
- * 
  * @param : callback
  *******************************************************************/
 
-noteModel.prototype.getDataByNoteId = (noteID, callback) => {
-  Collab.find({ noteID: noteID })
-    .populate('userID', { notes: 0, password: 0, __v: 0, resetPasswordExpires: 0, resetPasswordToken: 0 })
-    .populate('collabUserID', { notes: 0, password: 0, __v: 0, resetPasswordExpires: 0, resetPasswordToken: 0 })
-    .populate('noteID')
-    .exec(function (err, result) {
+noteModel.prototype.deleteCollaborator = (data, callback) => {
+  var obj = {
+    // userID: data.userID,
+    noteID: data.noteID,
+    collabUserID: data.collabUserID
+  };
+  note.findOneAndUpdate(
+    { _id: obj.noteID },
+    { $pull: { collab: obj.collabUserID } },
+    (err, result) => {
       if (err) {
         callback(err);
       } else {
+        console.log(
+          "bingo"
+        );
         callback(null, result);
       }
-    })
-}
+    }
+  );
+};
+// noteModel.prototype.getDataByNoteId = (noteID, callback) => {
+//   Collab.find({ noteID: noteID })
+//     .populate("userID", {
+//       notes: 0,
+//       password: 0,
+//       __v: 0,
+//       resetPasswordExpires: 0,
+//       resetPasswordToken: 0
+//     })
+//     .populate("collabUserID", {
+//       notes: 0,
+//       password: 0,
+//       __v: 0,
+//       resetPasswordExpires: 0,
+//       resetPasswordToken: 0
+//     })
+//     .populate("noteID")
+//     .exec(function (err, result) {
+//       if (err) {
+//         callback(err);
+//       } else {
+//         callback(null, result);
+//       }
+//     });
+// };
 
 /*************************************************************************
  * @param: userID
  * @param: callback
  ***********************************************************************/
 
-noteModel.prototype.getCollabNotesUserId = (userID, callback) => {
-  console.log("--------------------------", userID);
-  Collab.find({ collabUserID: userID }, (err, result) => {
-    if (err) {
-      callback(err);
-    } else {
-      callback(null, result);
-    }
-  })
-}
+// noteModel.prototype.getCollabNotesUserId = (userID, callback) => {
+//   console.log("--------------------------", userID);
+//   Collab.find({ collabUserID: userID }, (err, result) => {
+//     if (err) {
+//       callback(err);
+//     } else {
+//       callback(null, result);
+//     }
+//   });
+// };
 
 /***********************************************************************************
  * @param: ownerUserId
  * @param: callback
- * 
+ *
  ***********************************************************************************/
 
-noteModel.prototype.getCollabOwnerUserId = (ownerUserId, callback) => {
-  Collab.find({ userID: ownerUserId })
-    .populate('collabUserID', { notes: 0, password: 0, __v: 0, resetPasswordExpires: 0, resetPasswordToken: 0 })
-    .exec(function (err, result) {
-      if (err) {
-        callback(err);
-      } else {
-        callback(null, result);
-      }
-    })
-}
+// noteModel.prototype.getCollabOwnerUserId = (ownerUserId, callback) => {
+//   Collab.find({ userID: ownerUserId })
+//     .populate("collabUserID", {
+//       notes: 0,
+//       password: 0,
+//       __v: 0,
+//       resetPasswordExpires: 0,
+//       resetPasswordToken: 0
+//     })
+//     .exec(function (err, result) {
+//       if (err) {
+//         callback(err);
+//       } else {
+//         callback(null, result);
+//       }
+//     });
+// };
 
-
-noteModel.prototype.getAllUser = (callBack) => {
+noteModel.prototype.getAllUser = callBack => {
   note.find((err, result) => {
-      if (err) {
-          callBack(err);
-      }
-      else {
-          const reminder = []
-          var d = new Date();
-          const date = new Date(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes()).toJSON();
+    if (err) {
+      callBack(err);
+    } else {
+      const reminder = [];
+      var d = new Date();
+      const date = new Date(
+        d.getFullYear(),
+        d.getMonth(),
+        d.getDate(),
+        d.getHours(),
+        d.getMinutes()
+      ).toJSON();
 
-          result.forEach(function (value) {
-              if (value.reminder == date) {
-                  console.log('correct');
-                  reminder.push(value);
-              }
-          })
-          console.log("Reminder length", reminder.length);
-          if (reminder.length > 0) {
-              callBack(null, reminder)
-          }
-          else {
-              callBack(null, "No reminders found")
-          }
+      result.forEach(function (value) {
+        if (value.reminder == date) {
+          console.log("correct");
+          reminder.push(value);
+        }
+      });
+      console.log("Reminder length", reminder.length);
+      if (reminder.length > 0) {
+        callBack(null, reminder);
+      } else {
+        callBack(null, "No reminders found");
       }
+    }
   });
-}
+};
 module.exports = new noteModel();

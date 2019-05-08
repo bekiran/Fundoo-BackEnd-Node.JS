@@ -7,6 +7,7 @@
  ******************************************************************************/
 const noteService = require("../services/note.services");
 const collaboratorService = require('../services/note.services')
+const sentmail = require('../middleware/sendmail')
 
 const redis = require('redis');
 
@@ -721,10 +722,12 @@ exports.deleteLabelToNote = (req, res) => {
  * @param {*response from backend} res
  *********************************************************************************/
 exports.saveCollaborator = (req, res) => {
+    console.log("coll==>", req.body);
+    
     try {
         req.checkBody('userID', 'userID required').not().isEmpty();
         req.checkBody('noteID', 'noteID required').not().isEmpty();
-        req.checkBody('collabUserID', 'collabUserID required').not().isEmpty();
+        // req.checkBody('collabUserID', 'collabUserID required').not().isEmpty();
         var errors = req.validationErrors();
         var response = {};
         if (errors) {
@@ -732,13 +735,16 @@ exports.saveCollaborator = (req, res) => {
             response.error = errors;
             return res.status(422).send(response);
         } else {
+
+            console.log('in else part in controllerfdghfgjhdfthj');
+            
             var responseResult = {};
             const collabData = {
-                userID: req.decoded.payload.user_id,
+                userID: req.body.userID,
                 noteID: req.body.noteID,
-                collabUserID: req.body.collabID
+                collabUserID: req.body.collabUserID
             }
-            collaboratorService.saveCollaborator(collabData, (err, result) => {
+            noteService.saveCollaborator(collabData, (err, result) => {
                 if (err) {
                     responseResult.status = false;
                     responseResult.error = err;
@@ -748,7 +754,7 @@ exports.saveCollaborator = (req, res) => {
                     responseResult.status = true;
                     responseResult.data = result;
                     const url = `you have been successfully collabed with one fundooNotes user`;
-                    sent.sendEMailFunctionForCollaborator(url);
+                    sentmail.sendEMailFunctionForCollaborator(url);
                     res.status(200).send(url);
                     //res.status(200).send(responseResult);
                 }
@@ -756,38 +762,151 @@ exports.saveCollaborator = (req, res) => {
         }
     }
     catch (error) {
+        console.log(error);
+        
         res.send(error)
     }
 }
 
 /**********************************************************************************
- * @description:It handles get the collaborator details
+ * @description:It handles to get collaborator details
  * @param {*request from frontend} req
  * @param {*response from backend} res
+ 
  **********************************************************************************/
-exports.getCollaboratorDetails = (req, res) => {
+
+ exports.getCollaborator=(req,res) => {
+    //  try {
+        var errors = req.validationErrors();
+        var response = {};
+        if (errors) {
+            response.status = false;
+            response.error = errors;
+            return res.status(422).send(response);
+        } else {
+            var responseResult = {};
+            const collabData = {
+                userID: req.decoded.id
+            };
+            noteService.getCollaborator(collabData, (err, result) => {
+                if (err) {
+                    responseResult.status = false;
+                    responseResult.error = err;
+                    res.status(500).send(responseResult);
+                } else {
+                    responseResult.status = true;
+                    responseResult.data = result;
+                    res.status(200).send(responseResult);
+                }
+            });
+        }
+         
+    //  } catch (error) {
+    //      console.log("Error in get Collaborator");   
+    //  }
+ };
+
+ /**********************************************************************************
+ * @description:It handles delete collaborator details
+ * @param {*request from frontend} req
+ * @param {*response from backend} res
+ 
+ **********************************************************************************/
+
+exports.deleteCollaborator = (req, res) => {
     try {
-        var responseResult = {};
-        // console.log("in collab noteController", req.body);
-        collaboratorService.getCollaboratorDetails((err, result) => {
-            console.log(err);
-            console.log(result);
-            if (err) {
-                responseResult.status = false;
-                responseResult.error = err;
-                res.status(500).send(responseResult);
+        console.log("delete note in controller", req.body);
+
+        // req.checkBody('userID', 'userID required').not().                                                                                                      isEmp                                      ty();
+        req.checkBody('noteID', 'noteID required').not().isEmpty();
+        // req.checkBody('collabUserID', 'collabUserID required').not().isEmpty();
+        var errors = req.validationErrors();
+        var response = {};
+        if (errors) {
+            response.status = false;
+            response.error = errors;
+            return res.status(422).send(response);
+        } else {
+            var responseResult = {};
+            const collabData = {
+                // userID: req.body.userID,
+                noteID: req.body.noteID,
+                collabUserID: req.body.collabUserID
             }
-            else {
-                responseResult.status = true;
-                responseResult.data = result;
-                res.status(200).send(responseResult);
-            }
-        })
+            // noteID = req.body.noteID;
+            noteService.deleteCollaborator(collabData, (err, result) => {
+                if (err) {
+                    responseResult.status = false;
+                    responseResult.error = err;
+                    res.status(500).send(responseResult);
+                } else {
+                    responseResult.status = true;
+                    responseResult.data = result;
+                    res.status(200).send(responseResult);
+                }
+            });
+        }
+    } catch (error) {
+        res.send(error);
     }
-    catch (error) {
-        res.send(error)
-    }
-}
+};
+// exports.getCollaborator = (req, res) => {
+//     try {
+//         // console.log("req-------------------->", req);
+//         // req.checkBody('userID', 'userID required').not().isEmpty();
+//         var errors = req.validationErrors();
+//         var response = {};
+//         if (errors) {
+//             response.status = false;
+//             response.error = errors;
+//             return res.status(422).send(response);
+//         } else {
+//             var responseResult = {};
+//             const CollaboratorData = {
+//                 userID: req.decoded.id
+//             };
+//             noteService.getCollaborator(CollaboratorData , (err, result) => {
+//                 if (err) {
+//                     responseResult.status = false;
+//                     responseResult.error = err;
+//                     res.status(500).send(responseResult);
+//                 } else {
+//                     responseResult.status = true;
+//                     responseResult.data = result;
+//                     res.status(200).send(responseResult);
+//                 }
+//             });
+//         }
+//     } catch (error) {
+//         res.send(error);
+//     }
+// };
+
+
+
+// exports.getCollaboratorDetails = (req, res) => {
+//     try {
+//         var responseResult = {};
+//         // console.log("in collab noteController", req.body);
+//         noteService.getCollaboratorDetails((err, result) => {
+//             console.log(err);
+//             console.log(result);
+//             if (err) {
+//                 responseResult.status = false;
+//                 responseResult.error = err;
+//                 res.status(500).send(responseResult);
+//             }
+//             else {
+//                 responseResult.status = true;
+//                 responseResult.data = result;
+//                 res.status(200).send(responseResult);
+//             }
+//         })
+//     }
+//     catch (error) {
+//         res.send(error)
+//     }
+// }
 
 exports.pushNotification = (req, res) => {
     try {
