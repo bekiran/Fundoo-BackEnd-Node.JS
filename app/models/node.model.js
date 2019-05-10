@@ -44,6 +44,10 @@ var noteSchema = new mongoose.Schema(
     trash: {
       type: Boolean
     },
+    image:{
+      type: String
+
+    },
     collab: [
       {
         type: String,
@@ -594,7 +598,7 @@ noteModel.prototype.saveCollaborator = (data, callback) => {
       console.log(result);
       note.findOneAndUpdate(
         { _id: result.noteID },
-        { $push: { collab: result.collabUserIDl } },
+        { $push: { collab: result.collabUserID } },
         (err, result) => {
           if (err) {
             callback(err);

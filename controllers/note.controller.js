@@ -449,22 +449,22 @@ exports.isPinned = (req, res) => {
 exports.updateImage = (req, res) => {
     try {
         // console.log("req.file------>", req.file);
-        req
-            .checkBody("noteID", "noteID required")
-            .not()
-            .isEmpty();
-        var errors = req.validationErrors();
-        var response = {};
-        if (errors) {
-            response.status = false;
-            response.error = errors;
-            return res.status(422).send(response);
-        } else {
+        // req
+        //     .checkBody("noteID", "noteID required")
+        //     .not()
+        //     .isEmpty();
+        // var errors = req.validationErrors();
+        // var response = {};
+        // if (errors) {
+        //     response.status = false;
+        //     response.error = errors;
+        //     return res.status(422).send(response);
+        // } else {
             var responseResult = {};
             noteID = req.body.noteID;
-            let imageUp = req.body.image;
+            let image = req.body.image;
             // let imageUp = (req.file.location);
-            noteService.updateImage(noteID, imageUp, (err, result) => {
+            noteService.updateImage(noteID, image, (err, result) => {
                 if (err) {
                     responseResult.success = false;
                     responseResult.error = err;
@@ -475,7 +475,6 @@ exports.updateImage = (req, res) => {
                     res.status(200).send(responseResult);
                 }
             });
-        }
     } catch (error) {
         res.send(error);
     }
@@ -786,7 +785,9 @@ exports.saveCollaborator = (req, res) => {
         } else {
             var responseResult = {};
             const collabData = {
-                userID: req.decoded.id
+                userID: req.decoded.id,
+                // noteID: req.body.noteID,
+                // collabUserID: Request.body.collabUserID
             };
             noteService.getCollaborator(collabData, (err, result) => {
                 if (err) {
